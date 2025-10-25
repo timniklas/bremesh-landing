@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BreMesh – das freie Funknetz für Bremen. Tritt der Community bei und verbinde dich mit dem Meshtastic-Netzwerk oder dem neuen MeshCore-System.">
+  <meta name="keywords" content="BreMesh, Meshtastic, MeshCore, Funknetz Bremen, LoRa, Mesh Netzwerk, Open Source, Kommunikation">
+  <meta name="robots" content="index, follow">
+  <title>Bremesh.de – Wähle deine Seite | Meshtastic & MeshCore</title>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "BreMesh",
+    "url": "https://bremesh.de",
+    "description": "Freies Mesh-Funknetz für Bremen. Verbinde dich über Meshtastic oder MeshCore.",
+    "sameAs": [
+        "https://meshtastic.bremesh.de",
+        "https://meshcore.bremesh.de"
+    ]
+    }
+    </script>
+  <style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        font-family: 'Roboto', sans-serif;
+        background: radial-gradient(circle at center, #0a0a0a 0%, #000000 100%);
+        color: #f5f5f5;
+        text-align: center;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        user-select: none;
+        position: relative;
+    }
+
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+
+    h1 {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: #00c3ff;
+    }
+
+    p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .button-container {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .button-container > a {
+        text-decoration: none;
+        color: white;
+        background: #222;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .button-container > a:hover {
+        transform: scale(1.05);
+    }
+
+    .meshtastic {
+        border-color: #00c3ff;
+        box-shadow: 0 0 20px #00c3ff66;
+    }
+
+    .meshtastic:hover {
+        background: #00c3ff22;
+    }
+
+    .meshcore {
+        border-color: #ff0077;
+        box-shadow: 0 0 20px #ff007766;
+    }
+
+    .meshcore:hover {
+        background: #ff007722;
+    }
+
+    footer {
+        position: absolute;
+        bottom: 15px;
+        font-size: 0.9rem;
+        opacity: 0.7;
+        left: 50%;
+        transform: translate(-50%, 0);
+    }
+
+    footer > a {
+        text-decoration: none;
+        color: white;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+
+  <h1>BreMesh – Die Wahl der Macht</h1>
+  <p>Wähle weise, junger Padawan. Welcher Pfad durch das Funknetz ist deiner?</p>
+
+  <div class="button-container">
+    <a href="https://meshtastic.bremesh.de" class="meshtastic">🌍 Die klassische Meshtastic-Karte</a>
+    <a href="https://meshcore.bremesh.de" class="meshcore">⚡ Der neue MeshCore-Weg</a>
+  </div>
+
+  <footer>
+    <a href="https://meshtastic.bremesh.de/impressum">Impressum / Datenschutz</a><br>
+    © 2025 BreMesh - Möge das Mesh mit dir sein 🛰️
+  </footer>
+
+  <script>
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+
+    let stars = [];
+    const numStars = 200;
+    let mouse = { x: 0, y: 0 };
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    for (let i = 0; i < numStars; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        z: Math.random() * canvas.width,
+        size: Math.random() * 1.5 + 0.5
+      });
+    }
+
+    document.addEventListener('mousemove', e => {
+      mouse.x = e.clientX - canvas.width / 2;
+      mouse.y = e.clientY - canvas.height / 2;
+    });
+
+    function drawStars() {
+      ctx.fillStyle = 'black';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = 'white';
+      for (let star of stars) {
+        let dx = (mouse.x / 100) * (star.z / canvas.width);
+        let dy = (mouse.y / 100) * (star.z / canvas.width);
+
+        let x = (star.x - canvas.width / 2 + dx) * (canvas.width / star.z) + canvas.width / 2;
+        let y = (star.y - canvas.height / 2 + dy) * (canvas.width / star.z) + canvas.height / 2;
+
+        if (x < 0 || x >= canvas.width || y < 0 || y >= canvas.height) {
+          star.x = Math.random() * canvas.width;
+          star.y = Math.random() * canvas.height;
+          star.z = canvas.width;
+        }
+
+        star.z -= 2;
+        if (star.z <= 0) star.z = canvas.width;
+
+        let size = star.size * (1 - star.z / canvas.width);
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgba(255,255,255,${1 - star.z / canvas.width})`;
+        ctx.fill();
+      }
+
+      requestAnimationFrame(drawStars);
+    }
+
+    drawStars();
+  </script>
+</body>
+</html>
